@@ -10,23 +10,29 @@
         </div>
 
         <div class="card-body">
-            <form id="search-form" class="mb-4 d-flex gap-2 flex-wrap" onsubmit="return false;">
-                <input type="text" class="form-control" id="search-input" placeholder="Cari judul / penulis...">
+            <form id="search-form" class="row g-2 mb-4">
+                <div class="col-md-5 col-lg-4">
+                    <input type="text" class="form-control" id="search-input" placeholder="Cari judul / penulis...">
+                </div>
 
-                <select class="form-select" id="genre-filter" style="max-width: 200px;">
-                    <option value="">-- Semua Genre --</option>
-                    @foreach ($genres as $genre)
-                        <option value="{{ $genre }}">{{ $genre }}</option>
-                    @endforeach
-                </select>
+                <div class="col-md-4 col-lg-3">
+                    <select class="form-select" id="genre-filter">
+                        <option value="">-- Semua Genre --</option>
+                        @foreach ($genres as $genre)
+                            <option value="{{ $genre }}">{{ $genre }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-                <button type="button" id="reset-btn" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-repeat me-1"></i>Reset
-                </button>
+                <div class="col-auto">
+                    <button type="button" id="reset-btn" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-repeat me-1"></i>Reset
+                    </button>
+                </div>
             </form>
 
             <div class="table-responsive">
-                @include('poems.partials.private-table', ['poems' => $poems])
+                @include('poems._table', ['poems' => $poems, 'showActions' => true])
             </div>
         </div>
     </div>
@@ -66,6 +72,21 @@
             });
 
             filterTable(); // Panggil sekali untuk inisialisasi
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.clickable-row').forEach(function(row) {
+                row.addEventListener('click', function() {
+                    window.location = row.dataset.href;
+                });
+            });
+
+            // Mencegah klik pada tombol dalam baris
+            document.querySelectorAll('.no-click').forEach(function(el) {
+                el.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
         });
     </script>
 @endsection

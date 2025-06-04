@@ -59,6 +59,7 @@ class PoemController extends Controller
         $poems = Poem::where('user_id', Auth::id())->orderByDesc('created_at')->get();
         $genres = Poem::select('genre')
             ->whereNotNull('genre')
+            ->where('user_id', Auth::id())
             ->distinct()
             ->orderBy('genre')
             ->pluck('genre');
@@ -68,12 +69,13 @@ class PoemController extends Controller
 
     public function create()
     {
-        return view('poems.create');
+        return view('poems.form');
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
+            'user_id' => 'nullable|exists:users,id',
             'title' => 'required',
             'author' => 'required',
             'genre' => 'nullable',
@@ -83,12 +85,6 @@ class PoemController extends Controller
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('illustrations', 'public');
-        }
-
-        if (Auth::check()) {
-            $data['user_id'] = Auth::id();
-        } else {
-            $data['user_id'] = null;
         }
 
         Poem::create($data);
@@ -102,7 +98,7 @@ class PoemController extends Controller
 
     public function edit(Poem $poem)
     {
-        return view('poems.edit', compact('poem'));
+        return view('poems.form', compact('poem'));
     }
 
     public function update(Request $request, Poem $poem)

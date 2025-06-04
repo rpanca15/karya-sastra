@@ -13,7 +13,7 @@ class Poem extends Model
      */
     protected $table = 'puisi';
     protected $fillable = [
-        'userd_id',
+        'user_id',
         'title',
         'author',
         'genre',
@@ -37,6 +37,6 @@ class Poem extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'userd_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
